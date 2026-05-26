@@ -1,5 +1,5 @@
 const { dbQuery } = require('../utils/database');
-const { runJetroEvaluation } = require('./jetroService');
+const { runMockEvaluation } = require('./aiService');
 const { parseResumeFile } = require('./fileService');
 const logger = require('../utils/logger');
 
@@ -29,7 +29,7 @@ const evaluateCandidate = async (candidateId, jobId, evaluationConfig = {}) => {
     }
 
     // 3. Trigger Jetro agents (or local simulated flow)
-    const rawResult = await runJetroEvaluation(resumeText, jobReqs, {
+    const rawResult = await runMockEvaluation(resumeText, jobReqs, {
       name: candidate.name,
       email: candidate.email
     });
