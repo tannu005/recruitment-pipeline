@@ -11,5 +11,3 @@ services:
         value: 5000
       - key: NODE_ENV
         value: production
-      - key: JETRO_API_KEY
-        value: your_jetro_api_key_here

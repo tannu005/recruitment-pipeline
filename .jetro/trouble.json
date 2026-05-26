@@ -1,0 +1,162 @@
+[
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802755985",
+    "timestamp": "2026-05-26T13:39:15.985Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802756002",
+    "timestamp": "2026-05-26T13:39:16.002Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802855020",
+    "timestamp": "2026-05-26T13:40:55.020Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802855170",
+    "timestamp": "2026-05-26T13:40:55.170Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802973009",
+    "timestamp": "2026-05-26T13:42:53.009Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779802973150",
+    "timestamp": "2026-05-26T13:42:53.150Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803093026",
+    "timestamp": "2026-05-26T13:44:53.026Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803093150",
+    "timestamp": "2026-05-26T13:44:53.150Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803213028",
+    "timestamp": "2026-05-26T13:46:53.028Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803213169",
+    "timestamp": "2026-05-26T13:46:53.169Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803333033",
+    "timestamp": "2026-05-26T13:48:53.033Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803333177",
+    "timestamp": "2026-05-26T13:48:53.177Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803453047",
+    "timestamp": "2026-05-26T13:50:53.047Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803453181",
+    "timestamp": "2026-05-26T13:50:53.181Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-kpi",
+    "message": "Refresh script failed: .jetro/scripts/refresh_kpis.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_kpis.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803573037",
+    "timestamp": "2026-05-26T13:52:53.037Z"
+  },
+  {
+    "type": "script_error",
+    "canvasId": "recruitment_pipeline_canvas",
+    "elementId": "frame-ranking",
+    "message": "Refresh script failed: .jetro/scripts/refresh_rankings.py",
+    "detail": "Command failed: \"python3\" \"c:\\Users\\YTANNU\\.gemini\\antigravity\\scratch\\recruitment-pipeline\\.jetro\\scripts\\refresh_rankings.py\"\n'\"python3\"' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+    "hint": "Check the Python script for errors. Run it manually to debug.",
+    "id": "err_1779803573204",
+    "timestamp": "2026-05-26T13:52:53.204Z"
+  }
+]
