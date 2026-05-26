@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: recruitment-pipeline-backend
+    name: recruitment-pipeline
     env: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    rootDir: .
+    buildCommand: npm run build
+    startCommand: npm start
     envVars:
       - key: PORT
         value: 5000
