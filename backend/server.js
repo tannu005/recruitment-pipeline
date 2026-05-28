@@ -80,7 +80,7 @@ app.post('/api/auth/register', async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const existingUser = await dbQuery.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
+    const existingUser = await dbQuery.get('SELECT * FROM users WHERE email = ? COLLATE NOCASE', [normalizedEmail]);
     if (existingUser) {
       return res.status(409).json({ error: 'Email already in use.' });
     }
@@ -119,8 +119,9 @@ app.post('/api/auth/login', async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const user = await dbQuery.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
+    const user = await dbQuery.get('SELECT * FROM users WHERE email = ? COLLATE NOCASE', [normalizedEmail]);
     if (!user) {
+      logger.warn(`Login failed: No account registered with email "${normalizedEmail}"`);
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
@@ -154,16 +155,21 @@ app.post('/api/auth/forgot-password', async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    logger.info(`Forgot password request received for: "${email}" (Normalized: "${normalizedEmail}")`);
     
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(normalizedEmail)) {
+      logger.warn(`Forgot password failed: Invalid email format for "${normalizedEmail}"`);
       return res.status(400).json({ error: 'Please enter a valid email address.' });
     }
 
-    const user = await dbQuery.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
+    const user = await dbQuery.get('SELECT * FROM users WHERE email = ? COLLATE NOCASE', [normalizedEmail]);
     if (!user) {
+      const allUsers = await dbQuery.all('SELECT id, email FROM users');
+      logger.warn(`Forgot password failed: No account registered with email "${normalizedEmail}". Registered users in database: ${JSON.stringify(allUsers)}`);
       return res.status(404).json({ error: 'No account registered with this email address.' });
     }
+    logger.info(`Forgot password: User found: ${user.email} (ID: ${user.id})`);
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 15 * 60 * 1000;
@@ -199,7 +205,7 @@ app.post('/api/auth/reset-password', async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const resetRecord = await dbQuery.get('SELECT * FROM password_resets WHERE email = ?', [normalizedEmail]);
+    const resetRecord = await dbQuery.get('SELECT * FROM password_resets WHERE email = ? COLLATE NOCASE', [normalizedEmail]);
     
     if (!resetRecord) {
       return res.status(400).json({ error: 'No active password reset request found.' });
@@ -214,8 +220,8 @@ app.post('/api/auth/reset-password', async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await dbQuery.run('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, normalizedEmail]);
-    await dbQuery.run('DELETE FROM password_resets WHERE email = ?', [normalizedEmail]);
+    await dbQuery.run('UPDATE users SET password = ? WHERE email = ? COLLATE NOCASE', [hashedPassword, normalizedEmail]);
+    await dbQuery.run('DELETE FROM password_resets WHERE email = ? COLLATE NOCASE', [normalizedEmail]);
 
     logger.info(`Password successfully reset for user ${normalizedEmail}`);
     res.json({ success: true, message: 'Password reset completed successfully. Please sign in with your new password!' });
