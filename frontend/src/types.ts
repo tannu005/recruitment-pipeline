@@ -23,6 +23,17 @@ export interface Candidate {
   strengths?: string[];
   gaps?: string[];
   resumeText?: string;
+  interviewQuestions?: string[];
+  comments?: Comment[];
+  inTalentPool?: boolean;
+}
+
+export interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  timestamp: string;
+  role: string;
 }
 
 export interface EvaluationData {

@@ -57,12 +57,14 @@ const candidatesRouter = require('./routes/candidates');
 const evaluationsRouter = require('./routes/evaluations');
 const auditRouter = require('./routes/audit');
 const notesRouter = require('./routes/notes');
+const guideRouter = require('./routes/guide');
 
 app.use('/api/jobs', jobsRouter);
 app.use('/api/candidates', candidatesRouter);
 app.use('/api', evaluationsRouter);
 app.use('/api/audit', auditRouter);
 app.use('/api/notes', notesRouter);
+app.use('/api/guide', guideRouter);
 
 // Auth register endpoint
 app.post('/api/auth/register', async (req, res, next) => {

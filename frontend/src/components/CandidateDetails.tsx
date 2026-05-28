@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, AlertTriangle, ShieldAlert, HelpCircle, FileText, Send, User, Download, BrainCircuit } from 'lucide-react';
+import { CheckCircle, AlertTriangle, ShieldAlert, HelpCircle, FileText, Send, User, Download, BrainCircuit, Calendar } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { toast } from 'react-hot-toast';
 import { jsPDF } from 'jspdf';
@@ -9,17 +9,43 @@ interface CandidateDetailsProps {
   cand: Candidate;
   token?: string;
   apiUrl?: string;
+  isBlindMode?: boolean;
 }
 
-function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
+function CandidateDetails({ cand, token, apiUrl, isBlindMode }: CandidateDetailsProps) {
+  const displayName = isBlindMode ? `Candidate #${cand.candidateId.slice(0, 4).toUpperCase()}` : cand.name;
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
+  const [activeDetailsTab, setActiveDetailsTab] = useState<'insights' | 'resume'>('insights');
+  const [fullCandidate, setFullCandidate] = useState<any>(null);
+  const [loadingFull, setLoadingFull] = useState(false);
 
   useEffect(() => {
     fetchNotes();
+    fetchFullCandidate();
   }, [cand.candidateId]);
+
+  const fetchFullCandidate = async () => {
+    setLoadingFull(true);
+    try {
+      const res = await fetch(`${apiUrl}/candidates/${cand.candidateId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFullCandidate(data);
+      }
+    } catch (err) {
+      console.error('Error fetching full candidate details:', err);
+    } finally {
+      setLoadingFull(false);
+    }
+  };
 
   const fetchNotes = async () => {
     setLoadingNotes(true);
@@ -28,7 +54,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        const data = await res.json();
+        const data = await res.text().then(t => { try { return t ? JSON.parse(t) : {}; } catch(e) { return {}; } });
         setNotes(data);
       }
     } catch (err) {
@@ -57,7 +83,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
 
       if (!res.ok) throw new Error('Failed to add note');
       
-      const addedNote = await res.json();
+      const addedNote = await res.text().then(t => { try { return t ? JSON.parse(t) : {}; } catch(e) { return {}; } });
       setNotes([addedNote, ...notes]);
       setNewNote('');
       toast.success('Note added');
@@ -90,7 +116,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
     const doc = new jsPDF();
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
-    doc.text(`Candidate Profile: ${cand.name}`, 14, 20);
+    doc.text(`Candidate Profile: ${displayName}`, 14, 20);
     
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
@@ -113,7 +139,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
       doc.text(`- ${gap}`, 14, 140 + (i * 10));
     });
 
-    doc.save(`${cand.name}_Profile.pdf`);
+    doc.save(`${displayName.replace(/\s+/g, '_')}_Profile.pdf`);
     toast.success('Generated PDF Export');
   };
 
@@ -121,7 +147,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
     const doc = new jsPDF();
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    doc.text(`Interview Kit: ${cand.name}`, 14, 20);
+    doc.text(`Interview Kit: ${displayName}`, 14, 20);
     
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
@@ -137,19 +163,19 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
       }
     });
 
-    doc.save(`${cand.name}_Interview_Kit.pdf`);
+    doc.save(`${displayName.replace(/\s+/g, '_')}_Interview_Kit.pdf`);
     toast.success('Interview Kit Exported as PDF');
   };
 
   const handleCSVExport = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Name,Status,Overall Score,Technical Skills,Experience,Culture,Risk Check,Top Strength,Top Gap,Recommendation\n"
-      + `"${cand.name}","${cand.status}","${cand.scores?.overallScore || 0}","${cand.scores?.skillMatch || 0}","${cand.scores?.experienceAlignment || 0}","${cand.scores?.cultureFit || 0}","${cand.scores?.riskAssessment || 0}","${(cand.strengths?.[0] || 'N/A').replace(/"/g, '""')}","${(cand.gaps?.[0] || 'N/A').replace(/"/g, '""')}","${cand.recommendation}"`;
+      + `"${displayName}","${cand.status}","${cand.scores?.overallScore || 0}","${cand.scores?.skillMatch || 0}","${cand.scores?.experienceAlignment || 0}","${cand.scores?.cultureFit || 0}","${cand.scores?.riskAssessment || 0}","${(cand.strengths?.[0] || 'N/A').replace(/"/g, '""')}","${(cand.gaps?.[0] || 'N/A').replace(/"/g, '""')}","${cand.recommendation}"`;
       
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${cand.name.replace(/\s+/g, '_')}_Insights.csv`);
+    link.setAttribute("download", `${displayName.replace(/\s+/g, '_')}_Insights.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -180,15 +206,41 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
         </div>
       </div>
 
-      {/* Visual Charts & Scores */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Detail Tabs */}
+      <div className="flex border-b border-slate-800/60 print:hidden mb-6">
+        <button
+          onClick={() => setActiveDetailsTab('insights')}
+          className={`px-4 py-2 text-sm font-semibold transition-all ${
+            activeDetailsTab === 'insights'
+              ? 'text-teal-400 border-b-2 border-teal-500'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          AI Insights
+        </button>
+        <button
+          onClick={() => setActiveDetailsTab('resume')}
+          className={`px-4 py-2 text-sm font-semibold transition-all ${
+            activeDetailsTab === 'resume'
+              ? 'text-teal-400 border-b-2 border-teal-500'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          Original Resume Text
+        </button>
+      </div>
+
+      {activeDetailsTab === 'insights' ? (
+        <>
+          {/* Visual Charts & Scores */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Radar Chart */}
         <div className="glass-panel p-4 rounded-xl flex items-center justify-center h-64 border border-gray-800/40">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-              <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+              <PolarGrid stroke={document.body.classList.contains('light-theme') ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)'} />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: document.body.classList.contains('light-theme') ? '#1e293b' : '#9CA3AF', fontSize: 12 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
               <Radar name="Candidate" dataKey="A" stroke="#0d9488" fill="#0d9488" fillOpacity={0.5} />
             </RadarChart>
@@ -295,12 +347,22 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
           <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
             <HelpCircle className="h-4 w-4 text-teal-400" /> Auto-Generated Interview Kit
           </h4>
-          <button 
-            onClick={() => setShowInterviewModal(true)}
-            className="text-xs bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/20 px-3 py-1.5 rounded-lg transition-all"
-          >
-            Open Kit
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setShowInterviewModal(true)}
+                className="text-xs bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/20 px-3 py-1.5 rounded-lg transition-all"
+              >
+                Open Kit
+              </button>
+              <button 
+                onClick={() => setShowScheduleModal(true)}
+                className="text-xs bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/20 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
+              >
+                <Calendar className="h-3.5 w-3.5" /> Schedule Interview
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -309,7 +371,7 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
           <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
             <div className="flex justify-between items-center p-5 border-b border-gray-800">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-teal-400" /> Interview Kit for {cand.name}
+                <HelpCircle className="h-5 w-5 text-teal-400" /> Interview Kit for {displayName}
               </h3>
               <button 
                 onClick={() => setShowInterviewModal(false)}
@@ -334,6 +396,122 @@ function CandidateDetails({ cand, token, apiUrl }: CandidateDetailsProps) {
                 <Download className="w-4 h-4" /> Export as PDF
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showScheduleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0a]/80 backdrop-blur-sm print:hidden">
+          <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl w-full max-w-md flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center p-5 border-b border-gray-800">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-fuchsia-400" /> Schedule Interview
+              </h3>
+              <button 
+                onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Date</label>
+                <input
+                  type="date"
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  className="w-full bg-[#222222] border border-gray-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-fuchsia-500 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Time</label>
+                <input
+                  type="time"
+                  value={scheduleTime}
+                  onChange={(e) => setScheduleTime(e.target.value)}
+                  className="w-full bg-[#222222] border border-gray-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-fuchsia-500 text-sm"
+                />
+              </div>
+            </div>
+            <div className="p-4 border-t border-gray-800 bg-[#222222] rounded-b-2xl flex justify-end">
+              <button 
+                onClick={() => {
+                  if (!scheduleDate || !scheduleTime) {
+                    toast.error('Please select both date and time');
+                    return;
+                  }
+                  toast.success(`Interview scheduled for ${scheduleDate} at ${scheduleTime}`);
+                  setShowScheduleModal(false);
+                  setScheduleDate('');
+                  setScheduleTime('');
+                }}
+                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-4 py-2 rounded-lg text-sm transition-all flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4" /> Confirm Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Schedule Interview Modal */}
+      {showScheduleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0a]/80 backdrop-blur-sm print:hidden">
+          <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl w-full max-w-md shadow-2xl">
+            <div className="flex justify-between items-center p-5 border-b border-gray-800">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-fuchsia-400" /> Schedule Interview
+              </h3>
+              <button onClick={() => setShowScheduleModal(false)} className="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-gray-400">Schedule an interview for <strong className="text-white">{displayName}</strong></p>
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Date</label>
+                <input
+                  type="date"
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  className="w-full bg-[#222222] border border-gray-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-fuchsia-500 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Time</label>
+                <input
+                  type="time"
+                  value={scheduleTime}
+                  onChange={(e) => setScheduleTime(e.target.value)}
+                  className="w-full bg-[#222222] border border-gray-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-fuchsia-500 text-sm"
+                />
+              </div>
+            </div>
+            <div className="p-4 border-t border-gray-800 bg-[#222222] rounded-b-2xl flex justify-end gap-2">
+              <button onClick={() => setShowScheduleModal(false)} className="text-gray-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-all">Cancel</button>
+              <button 
+                onClick={() => {
+                  if (!scheduleDate || !scheduleTime) { toast.error('Please select both date and time.'); return; }
+                  toast.success(`Interview scheduled for ${scheduleDate} at ${scheduleTime}`);
+                  setShowScheduleModal(false);
+                  setScheduleDate('');
+                  setScheduleTime('');
+                }}
+                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-4 py-2 rounded-lg text-sm transition-all flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4" /> Confirm Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+        </>
+      ) : (
+        <div className="space-y-4">
+          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Raw Parsed CV Text</h4>
+          <div className="glass-panel p-6 rounded-xl border border-gray-800/40 font-mono text-xs text-gray-300 whitespace-pre-wrap overflow-y-auto max-h-[500px] leading-relaxed bg-[#0a0a0a]/50">
+            {loadingFull ? (
+              <span className="text-gray-500 italic">Extracting raw resume text...</span>
+            ) : fullCandidate?.resume_text || "No resume text extracted."}
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowLeft, CheckCircle, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-function CandidateCompare({ candidates, onBack }) {
+function CandidateCompare({ candidates, onBack, isBlindMode }) {
   if (!candidates || candidates.length === 0) return null;
 
   // Prepare radar data for multiple candidates
@@ -48,13 +48,13 @@ function CandidateCompare({ candidates, onBack }) {
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Metrics Overlay</h3>
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-              <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+              <PolarGrid stroke={document.body.classList.contains('light-theme') ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)'} />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: document.body.classList.contains('light-theme') ? '#1e293b' : '#9CA3AF', fontSize: 12 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
               {candidates.map((cand, idx) => (
                 <Radar 
                   key={cand.candidateId}
-                  name={cand.name} 
+                  name={isBlindMode ? `Cand. #${idx+1}` : cand.name} 
                   dataKey={`cand_${idx}`} 
                   stroke={colors[idx % colors.length]} 
                   fill={colors[idx % colors.length]} 
@@ -67,7 +67,7 @@ function CandidateCompare({ candidates, onBack }) {
             {candidates.map((cand, idx) => (
               <div key={cand.candidateId} className="flex items-center gap-1.5 text-xs text-gray-300">
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }}></span>
-                {cand.name.split(' ')[0]}
+                {isBlindMode ? `Cand. #${idx+1}` : cand.name.split(' ')[0]}
               </div>
             ))}
           </div>
@@ -80,8 +80,10 @@ function CandidateCompare({ candidates, onBack }) {
               
               {/* Header */}
               <div className="text-center p-4 bg-[#222222] rounded-xl border border-gray-800/60">
-                <h3 className="font-bold text-lg text-white" style={{ color: colors[idx % colors.length] }}>{cand.name}</h3>
-                <p className="text-xs text-gray-400">{cand.email}</p>
+                <h3 className="font-bold text-lg text-white" style={{ color: colors[idx % colors.length] }}>
+                  {isBlindMode ? `Candidate #${(idx + 1).toString().padStart(3, '0')}` : cand.name}
+                </h3>
+                {!isBlindMode && <p className="text-xs text-gray-400">{cand.email}</p>}
                 <div className="mt-2 text-2xl font-extrabold text-white">
                   {cand.scores?.overallScore || cand.overallScore || 0}%
                 </div>
