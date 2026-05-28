@@ -13,9 +13,24 @@ const isResumeOrCV = (text) => {
   if (!text) return false;
   const textLower = text.toLowerCase();
 
-  // Validate character lengths (real resumes are typically between 200 and 50,000 chars)
-  // Rejects giant text books, manuals, or extremely brief single-word files
+  // Validate character lengths (real resumes are typically between 200 and 60,000 chars)
   if (text.trim().length < 200 || text.trim().length > 60000) return false;
+
+  // Blocklist specific non-resume academic schedules and calendar structures
+  const isBlocklisted = 
+    textLower.includes('academic calendar') ||
+    textLower.includes('semester schedule') ||
+    textLower.includes('class schedule') ||
+    (textLower.includes('classes begin') && textLower.includes('final exams')) ||
+    (textLower.includes('fall semester') && textLower.includes('spring semester')) ||
+    (textLower.includes('registration deadline') && textLower.includes('semester'));
+
+  if (isBlocklisted) return false;
+
+  // Real resumes almost always contain contact details, specifically an email address
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  const hasEmail = emailRegex.test(text);
+  if (!hasEmail) return false;
 
   const categories = {
     education: ['education', 'academic', 'university', 'college', 'degree', 'school', 'gpa', 'bachelor', 'master', 'phd', 'graduate', 'undergraduate', 'diploma'],
@@ -31,7 +46,6 @@ const isResumeOrCV = (text) => {
 
   // Strict double-factor filters:
   // A real resume/CV must match at least two core pillars (Education + Experience, Experience + Skills, or Education + Skills + general placeholders)
-  // This effectively blocks calendars (matches education only), textbook slices, invoices, etc.
   if (educationMatched && experienceMatched) return true;
   if (experienceMatched && skillsMatched) return true;
   if (educationMatched && skillsMatched && generalMatched) return true;

@@ -74,7 +74,8 @@ app.post('/api/auth/register', async (req, res, next) => {
       return res.status(400).json({ error: 'Name, email, and password are required.' });
     }
 
-    const existingUser = await dbQuery.get('SELECT * FROM users WHERE email = ?', [email]);
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await dbQuery.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
     if (existingUser) {
       return res.status(409).json({ error: 'Email already in use.' });
     }
@@ -84,18 +85,18 @@ app.post('/api/auth/register', async (req, res, next) => {
 
     await dbQuery.run(
       'INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)',
-      [userId, name, email, hashedPassword, 'recruiter']
+      [userId, name, normalizedEmail, hashedPassword, 'recruiter']
     );
 
-    const token = generateToken({ id: userId, email, role: 'recruiter' });
-    logger.info(`New user registered: ${email}`);
+    const token = generateToken({ id: userId, email: normalizedEmail, role: 'recruiter' });
+    logger.info(`New user registered: ${normalizedEmail}`);
     
     res.status(201).json({
       token,
       user: {
         id: userId,
         name,
-        email,
+        email: normalizedEmail,
         role: 'recruiter'
       }
     });
@@ -112,7 +113,8 @@ app.post('/api/auth/login', async (req, res, next) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    const user = await dbQuery.get('SELECT * FROM users WHERE email = ?', [email]);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await dbQuery.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
@@ -123,7 +125,7 @@ app.post('/api/auth/login', async (req, res, next) => {
     }
 
     const token = generateToken({ id: user.id, email: user.email, role: user.role });
-    logger.info(`User logged in: ${email}`);
+    logger.info(`User logged in: ${normalizedEmail}`);
     res.json({
       token,
       user: {
