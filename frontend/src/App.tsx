@@ -143,6 +143,10 @@ function App() {
   const fetchJobs = async () => {
     try {
       const res = await fetch(`${API_URL}/jobs`, { headers: { 'Authorization': `Bearer ${token}` } });
+      if (res.status === 401 || res.status === 403) {
+        handleLogout();
+        return;
+      }
       if (res.ok) {
         const data = await res.text().then(t => { try { return t ? JSON.parse(t) : {}; } catch(e) { return {}; } });
         setJobs(data);
@@ -156,6 +160,10 @@ function App() {
   const fetchJobDetails = async (jobId) => {
     try {
       const jobRes = await fetch(`${API_URL}/jobs/${jobId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+      if (jobRes.status === 401 || jobRes.status === 403) {
+        handleLogout();
+        return;
+      }
       if (jobRes.ok) setCurrentJob(await jobRes.text().then(t => { try { return t ? JSON.parse(t) : {}; } catch(e) { return {}; } }));
 
       const candRes = await fetch(`${API_URL}/candidates/job/${jobId}`, { headers: { 'Authorization': `Bearer ${token}` } });
